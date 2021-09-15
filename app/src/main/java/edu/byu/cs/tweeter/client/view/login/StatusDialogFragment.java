@@ -93,7 +93,7 @@ public class StatusDialogFragment extends AppCompatDialogFragment {
         try {
             observer = (Observer) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement the StatusDialogFragment.Observer");
+            throw new ClassCastException(context.toString() + " must implement the StatusDialogFragment.GetUserObserver");
         }
     }
 

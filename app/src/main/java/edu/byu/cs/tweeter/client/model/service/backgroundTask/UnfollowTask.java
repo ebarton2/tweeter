@@ -1,4 +1,4 @@
-package edu.byu.cs.tweeter.client.backgroundTask;
+package edu.byu.cs.tweeter.client.model.service.backgroundTask;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,10 +9,10 @@ import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
 /**
- * Background task that establishes a following relationship between two users.
+ * Background task that removes a following relationship between two users.
  */
-public class FollowTask implements Runnable {
-    private static final String LOG_TAG = "FollowTask";
+public class UnfollowTask implements Runnable {
+    private static final String LOG_TAG = "UnfollowTask";
 
     public static final String SUCCESS_KEY = "success";
     public static final String MESSAGE_KEY = "message";
@@ -32,7 +32,7 @@ public class FollowTask implements Runnable {
      */
     private Handler messageHandler;
 
-    public FollowTask(AuthToken authToken, User followee, Handler messageHandler) {
+    public UnfollowTask(AuthToken authToken, User followee, Handler messageHandler) {
         this.authToken = authToken;
         this.followee = followee;
         this.messageHandler = messageHandler;
