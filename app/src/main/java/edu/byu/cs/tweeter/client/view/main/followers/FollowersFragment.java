@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import edu.byu.cs.client.R;
-import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowersTask;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
@@ -112,7 +112,7 @@ public class FollowersFragment extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    UserService.GetUserTask getUserTask = new UserService.GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
+                    GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
                             userAlias.getText().toString(), new GetUserHandler());
                     ExecutorService executor = Executors.newSingleThreadExecutor();
                     executor.execute(getUserTask);
@@ -142,18 +142,18 @@ public class FollowersFragment extends Fragment {
         private class GetUserHandler extends Handler {
             @Override
             public void handleMessage(@NonNull Message msg) {
-                boolean success = msg.getData().getBoolean(UserService.GetUserTask.SUCCESS_KEY);
+                boolean success = msg.getData().getBoolean(GetUserTask.SUCCESS_KEY);
                 if (success) {
-                    User user = (User) msg.getData().getSerializable(UserService.GetUserTask.USER_KEY);
+                    User user = (User) msg.getData().getSerializable(GetUserTask.USER_KEY);
 
                     Intent intent = new Intent(getContext(), MainActivity.class);
                     intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
                     startActivity(intent);
-                } else if (msg.getData().containsKey(UserService.GetUserTask.MESSAGE_KEY)) {
-                    String message = msg.getData().getString(UserService.GetUserTask.MESSAGE_KEY);
+                } else if (msg.getData().containsKey(GetUserTask.MESSAGE_KEY)) {
+                    String message = msg.getData().getString(GetUserTask.MESSAGE_KEY);
                     Toast.makeText(getContext(), "Failed to get user's profile: " + message, Toast.LENGTH_LONG).show();
-                } else if (msg.getData().containsKey(UserService.GetUserTask.EXCEPTION_KEY)) {
-                    Exception ex = (Exception) msg.getData().getSerializable(UserService.GetUserTask.EXCEPTION_KEY);
+                } else if (msg.getData().containsKey(GetUserTask.EXCEPTION_KEY)) {
+                    Exception ex = (Exception) msg.getData().getSerializable(GetUserTask.EXCEPTION_KEY);
                     Toast.makeText(getContext(), "Failed to get user's profile because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }

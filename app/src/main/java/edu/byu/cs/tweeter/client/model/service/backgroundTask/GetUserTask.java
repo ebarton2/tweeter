@@ -5,24 +5,18 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import java.io.Serializable;
-import java.util.List;
-
 import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.util.FakeData;
-import edu.byu.cs.tweeter.util.Pair;
 
 /**
- * Background task that retrieves a page of statuses from a user's feed.
+ * Background task that returns the profile for a specified user.
  */
-public class GetFeedTask implements Runnable {
-    private static final String LOG_TAG = "GetFeedTask";
+public class GetUserTask implements Runnable {
+    private static final String LOG_TAG = "GetUserTask";
 
     public static final String SUCCESS_KEY = "success";
-    public static final String STATUSES_KEY = "statuses";
-    public static final String MORE_PAGES_KEY = "more-pages";
+    public static final String USER_KEY = "user";
     public static final String MESSAGE_KEY = "message";
     public static final String EXCEPTION_KEY = "exception";
 
@@ -31,46 +25,26 @@ public class GetFeedTask implements Runnable {
      */
     private AuthToken authToken;
     /**
-     * The user whose feed is being retrieved.
-     * (This can be any user, not just the currently logged-in user.)
+     * Alias (or handle) for user whose profile is being retrieved.
      */
-    private User targetUser;
-    /**
-     * Maximum number of statuses to return (i.e., page size).
-     */
-    private int limit;
-    /**
-     * The last status returned in the previous page of results (can be null).
-     * This allows the new page to begin where the previous page ended.
-     */
-    private Status lastStatus;
+    private String alias;
     /**
      * Message handler that will receive task results.
      */
     private Handler messageHandler;
 
-    public GetFeedTask(AuthToken authToken, User targetUser, int limit, Status lastStatus,
-                       Handler messageHandler) {
+    public GetUserTask(AuthToken authToken, String alias, Handler messageHandler) {
         this.authToken = authToken;
-        this.targetUser = targetUser;
-        this.limit = limit;
-        this.lastStatus = lastStatus;
+        this.alias = alias;
         this.messageHandler = messageHandler;
     }
 
     @Override
     public void run() {
         try {
-            Pair<List<Status>, Boolean> pageOfStatus = getFeed();
+            User user = getUser();
 
-            List<Status> statuses = pageOfStatus.getFirst();
-            boolean hasMorePages = pageOfStatus.getSecond();
-
-            for (Status s : statuses) {
-                BackgroundTaskUtils.loadImage(s.getUser());
-            }
-
-            sendSuccessMessage(statuses, hasMorePages);
+            sendSuccessMessage(user);
 
         } catch (Exception ex) {
             Log.e(LOG_TAG, ex.getMessage(), ex);
@@ -82,16 +56,15 @@ public class GetFeedTask implements Runnable {
         return new FakeData();
     }
 
-    private Pair<List<Status>, Boolean> getFeed() {
-        Pair<List<Status>, Boolean> pageOfStatus = getFakeData().getPageOfStatus(lastStatus, limit);
-        return pageOfStatus;
+    private User getUser() {
+        User user = getFakeData().findUserByAlias(alias);
+        return user;
     }
 
-    private void sendSuccessMessage(List<Status> statuses, boolean hasMorePages) {
+    private void sendSuccessMessage(User user) {
         Bundle msgBundle = new Bundle();
         msgBundle.putBoolean(SUCCESS_KEY, true);
-        msgBundle.putSerializable(STATUSES_KEY, (Serializable) statuses);
-        msgBundle.putBoolean(MORE_PAGES_KEY, hasMorePages);
+        msgBundle.putSerializable(USER_KEY, user);
 
         Message msg = Message.obtain();
         msg.setData(msgBundle);

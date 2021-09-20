@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import edu.byu.cs.tweeter.client.model.service.BackgroundTaskUtils;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.util.FakeData;
