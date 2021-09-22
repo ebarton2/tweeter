@@ -29,6 +29,7 @@ import edu.byu.cs.client.R;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowersTask;
 import edu.byu.cs.tweeter.client.cache.Cache;
+import edu.byu.cs.tweeter.client.presenter.FollowersPresenter;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.client.view.util.ImageUtils;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -36,7 +37,7 @@ import edu.byu.cs.tweeter.model.domain.User;
 /**
  * Implements the "Followers" tab.
  */
-public class FollowersFragment extends Fragment {
+public class FollowersFragment extends Fragment implements FollowersPresenter.FollowersView {
 
     private static final String LOG_TAG = "FollowersFragment";
     private static final String USER_KEY = "UserKey";
@@ -47,8 +48,10 @@ public class FollowersFragment extends Fragment {
     private static final int PAGE_SIZE = 10;
 
     private User user;
+    private Toast infoToast;
 
     private FollowersRecyclerViewAdapter followersRecyclerViewAdapter;
+    private FollowersPresenter presenter;
 
     /**
      * Creates an instance of the fragment and places the target user in an arguments
