@@ -77,6 +77,7 @@ public class FollowersFragment extends Fragment implements FollowersPresenter.Fo
 
         //noinspection ConstantConditions
         user = (User) getArguments().getSerializable(USER_KEY);
+        presenter = new FollowersPresenter(this);
 
         RecyclerView followersRecyclerView = view.findViewById(R.id.followersRecyclerView);
 
@@ -85,10 +86,44 @@ public class FollowersFragment extends Fragment implements FollowersPresenter.Fo
 
         followersRecyclerViewAdapter = new FollowersRecyclerViewAdapter();
         followersRecyclerView.setAdapter(followersRecyclerViewAdapter);
+        presenter.loadMoreItems(user);
 
         followersRecyclerView.addOnScrollListener(new FollowRecyclerViewPaginationScrollListener(layoutManager));
 
         return view;
+    }
+
+    @Override
+    public void displayMoreItems(List<User> followees, boolean hasMorePages) {
+
+    }
+
+    @Override
+    public void addLoadingFooter() {
+        followersRecyclerViewAdapter.addLoadingFooter();
+    }
+
+    @Override
+    public void removeLoadingFooter() {
+        followersRecyclerViewAdapter.removeLoadingFooter();
+    }
+
+    @Override
+    public void navigateToUser(User user) {
+        Intent intent = new Intent(getContext(), MainActivity.class);
+        intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
+        startActivity(intent);
+    }
+
+    @Override
+    public void displayInfoMessage(String message) {
+        infoToast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
+        infoToast.show();
+    }
+
+    @Override
+    public void clearInfoMessage() {
+        infoToast.cancel();
     }
 
     /**
@@ -114,7 +149,7 @@ public class FollowersFragment extends Fragment implements FollowersPresenter.Fo
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onClick(View view) { // TODO: Move this out
                     GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
                             userAlias.getText().toString(), new GetUserHandler());
                     ExecutorService executor = Executors.newSingleThreadExecutor();

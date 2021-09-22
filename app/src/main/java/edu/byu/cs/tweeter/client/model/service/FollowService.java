@@ -11,7 +11,14 @@ import edu.byu.cs.tweeter.model.domain.User;
 
 public class FollowService {
 
-    public interface FollowingObserver {
+    public interface FollowingObserver
+    {
+        void handleSuccess(List<User> followees, boolean hasMorePages);
+        void handleFailure(String message);
+    }
+
+    public interface FollowersObserver
+    {
         void handleSuccess(List<User> followees, boolean hasMorePages);
         void handleFailure(String message);
     }

@@ -63,11 +63,11 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Fo
         return fragment;
     }
 
-    @Override
+    /*@Override
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new FollowingPresenter(this);
-    }
+
+    }*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,6 +75,7 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Fo
         View view = inflater.inflate(R.layout.fragment_following, container, false);
 
         user = (User) getArguments().getSerializable(USER_KEY);
+        presenter = new FollowingPresenter(this);
 
         RecyclerView followingRecyclerView = view.findViewById(R.id.followingRecyclerView);
 
@@ -88,11 +89,6 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Fo
         followingRecyclerView.addOnScrollListener(new FollowRecyclerViewPaginationScrollListener(layoutManager));
 
         return view;
-    }
-
-    @Override
-    public void displayErrorMessage(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
 
     @Override

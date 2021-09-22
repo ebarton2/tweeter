@@ -11,7 +11,6 @@ public class FollowingPresenter {
     private static final int PAGE_SIZE = 10;
 
     public interface FollowingView {
-        void displayErrorMessage(String message);
         void displayMoreItems(List<User> followees, boolean hasMorePages);
         void addLoadingFooter();
         void removeLoadingFooter();
@@ -60,7 +59,7 @@ public class FollowingPresenter {
                 public void handleFailure(String message) {
                     isLoading = false;
                     view.removeLoadingFooter();
-                    view.displayErrorMessage(message);
+                    view.displayInfoMessage(message);
                 }
             });
         }
@@ -78,7 +77,7 @@ public class FollowingPresenter {
             @Override
             public void handleFailure(String message) {
                 view.clearInfoMessage();
-                view.displayErrorMessage(message);
+                view.displayInfoMessage(message);
             }
         });
     }
