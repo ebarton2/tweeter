@@ -63,12 +63,6 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Fo
         return fragment;
     }
 
-    /*@Override
-    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }*/
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
