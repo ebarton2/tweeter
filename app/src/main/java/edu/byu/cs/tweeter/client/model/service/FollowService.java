@@ -11,7 +11,8 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFollowi
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class FollowService {
+public class FollowService
+{
 
     public interface FollowingObserver
     {
