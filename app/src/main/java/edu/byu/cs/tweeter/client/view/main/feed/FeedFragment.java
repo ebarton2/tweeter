@@ -52,8 +52,6 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedView {
     private static final int LOADING_DATA_VIEW = 0;
     private static final int ITEM_VIEW = 1;
 
-
-
     private User user;
     private FeedPresenter presenter;
     private Toast itemToast;
@@ -224,30 +222,6 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedView {
             post.setClickable(true);
             post.setMovementMethod(LinkMovementMethod.getInstance());
         }
-
-        /**
-         * Message handler (i.e., observer) for GetUserTask.
-         */
-        /*private class GetUserHandler extends Handler { // TODO: remove this
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                boolean success = msg.getData().getBoolean(GetUserTask.SUCCESS_KEY);
-                if (success) {
-                    User user = (User) msg.getData().getSerializable(GetUserTask.USER_KEY);
-
-                    Intent intent = new Intent(getContext(), MainActivity.class);
-                    intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
-                    startActivity(intent);
-                } else if (msg.getData().containsKey(GetUserTask.MESSAGE_KEY)) {
-                    String message = msg.getData().getString(GetUserTask.MESSAGE_KEY);
-                    Toast.makeText(getContext(), "Failed to get user's profile: " + message, Toast.LENGTH_LONG).show();
-                } else if (msg.getData().containsKey(GetUserTask.EXCEPTION_KEY)) {
-                    Exception ex = (Exception) msg.getData().getSerializable(GetUserTask.EXCEPTION_KEY);
-                    Toast.makeText(getContext(), "Failed to get user's profile because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-        }*/
-
     }
 
     /**
@@ -262,7 +236,6 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedView {
          * Creates an instance and loads the first page of feed data.
          */
         FeedRecyclerViewAdapter() throws MalformedURLException {
-            //loadMoreItems();
         }
 
         /**
@@ -427,20 +400,18 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedView {
             int totalItemCount = layoutManager.getItemCount();
             int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
-            //if (!feedRecyclerViewAdapter.isLoading && feedRecyclerViewAdapter.hasMorePages) {
-                if ((visibleItemCount + firstVisibleItemPosition) >=
-                        totalItemCount && firstVisibleItemPosition >= 0) {
-                    // Run this code later on the UI thread
-                    final Handler handler = new Handler(Looper.getMainLooper());
-                    handler.postDelayed(() -> {
-                        try {
-                            feedRecyclerViewAdapter.loadMoreItems();
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        }
-                    }, 0);
-                }
-            //}
+            if ((visibleItemCount + firstVisibleItemPosition) >=
+                    totalItemCount && firstVisibleItemPosition >= 0) {
+                // Run this code later on the UI thread
+                final Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(() -> {
+                    try {
+                        feedRecyclerViewAdapter.loadMoreItems();
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                }, 0);
+            }
         }
     }
 

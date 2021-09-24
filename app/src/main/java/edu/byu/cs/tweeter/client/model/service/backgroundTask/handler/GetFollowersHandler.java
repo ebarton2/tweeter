@@ -22,7 +22,6 @@ public class GetFollowersHandler extends Handler
         this.observer = observer;
     }
 
-
     @Override
     public void handleMessage(@NonNull Message msg)
     {

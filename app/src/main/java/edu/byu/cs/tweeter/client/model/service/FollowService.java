@@ -90,7 +90,6 @@ public class FollowService
 
     public void unfollow(User selectedUser, UnfollowObserver observer)
     {
-        //TODO: Goes into Follow service
         UnfollowTask unfollowTask = new UnfollowTask(Cache.getInstance().getCurrUserAuthToken(),
                 selectedUser, new UnfollowHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -99,7 +98,6 @@ public class FollowService
 
     public void follow(User selectedUser, FollowObserver observer)
     {
-        //TODO: Goes into Follow service
         FollowTask followTask = new FollowTask(Cache.getInstance().getCurrUserAuthToken(),
                 selectedUser, new FollowHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();

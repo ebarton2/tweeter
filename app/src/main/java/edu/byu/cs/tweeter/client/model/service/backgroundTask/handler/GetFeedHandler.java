@@ -2,7 +2,6 @@ package edu.byu.cs.tweeter.client.model.service.backgroundTask.handler;
 
 import android.os.Handler;
 import android.os.Message;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -23,25 +22,17 @@ public class GetFeedHandler extends Handler {
     }
     @Override
     public void handleMessage(@NonNull Message msg) {
-        //isLoading = false;
-        //removeLoadingFooter();
-
         boolean success = msg.getData().getBoolean(GetFeedTask.SUCCESS_KEY);
         if (success) {
             List<Status> statuses = (List<Status>) msg.getData().getSerializable(GetFeedTask.STATUSES_KEY);
             boolean hasMorePages = msg.getData().getBoolean(GetFeedTask.MORE_PAGES_KEY);
             observer.handleSuccess(statuses, hasMorePages);
-            //lastStatus = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;
-
-            //feedRecyclerViewAdapter.addItems(statuses);
         } else if (msg.getData().containsKey(GetFeedTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(GetFeedTask.MESSAGE_KEY);
             observer.handleFailure("Failed to get feed: " + message);
-            //Toast.makeText(getContext(), , Toast.LENGTH_LONG).show();
         } else if (msg.getData().containsKey(GetFeedTask.EXCEPTION_KEY)) {
             Exception ex = (Exception) msg.getData().getSerializable(GetFeedTask.EXCEPTION_KEY);
             observer.handleFailure("Failed to get feed because of exception: " + ex.getMessage());
-            //Toast.makeText(getContext(), , Toast.LENGTH_LONG).show();
         }
     }
 }

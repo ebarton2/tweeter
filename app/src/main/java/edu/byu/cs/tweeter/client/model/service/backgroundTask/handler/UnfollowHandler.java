@@ -2,13 +2,11 @@ package edu.byu.cs.tweeter.client.model.service.backgroundTask.handler;
 
 import android.os.Handler;
 import android.os.Message;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.UnfollowTask;
-import edu.byu.cs.tweeter.client.view.main.MainActivity;
 
 public class UnfollowHandler extends Handler {
     private final FollowService.UnfollowObserver observer;
@@ -29,7 +27,5 @@ public class UnfollowHandler extends Handler {
             Exception ex = (Exception) msg.getData().getSerializable(UnfollowTask.EXCEPTION_KEY);
             observer.handleFailure("Failed to unfollow because of exception: " + ex.getMessage());
         }
-
-        //mainActivity.followButton.setEnabled(true);
     }
 }

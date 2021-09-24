@@ -60,7 +60,6 @@ public class LoginPresenter
         {
             view.setErrorMessage(validation);
         }
-
     }
 
     public String validateLogin(String alias, String password)

@@ -216,4 +216,9 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
             followButton.setTextColor(getResources().getColor(R.color.lightGray));
         }
     }
+
+    @Override
+    public void enableFollowButton(boolean enable) {
+        followButton.setEnabled(enable);
+    }
 }

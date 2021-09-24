@@ -63,8 +63,6 @@ public class StoryPresenter
                     view.infoMessage(message);
                 }
             });
-
-
         }
     }
 

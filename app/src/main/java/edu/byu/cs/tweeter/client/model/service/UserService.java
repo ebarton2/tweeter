@@ -46,7 +46,6 @@ public class UserService
 
     public void logout(LogoutObserver observer)
     {
-        //TODO: Goes into User service
         LogoutTask logoutTask = new LogoutTask(Cache.getInstance().getCurrUserAuthToken(), new LogoutHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(logoutTask);

@@ -42,6 +42,7 @@ public class MainPresenter
         void setFollowerCount(int count);
         void setFollowingCount(int count);
         void updateFollowButton(boolean toRemove);
+        void enableFollowButton(boolean enable);
     }
 
     public MainPresenter(MainView view)
@@ -68,7 +69,7 @@ public class MainPresenter
                 view.infoMessage(message);
             }
         });
-
+        view.enableFollowButton(true);
         view.infoMessage("Removing " + selectedUser.getName() + "...");
     }
 
@@ -86,6 +87,7 @@ public class MainPresenter
                 view.infoMessage(message);
             }
         });
+        view.enableFollowButton(true);
         view.infoMessage("Adding " + selectedUser.getName() + "...");
     }
 

@@ -2,14 +2,11 @@ package edu.byu.cs.tweeter.client.model.service.backgroundTask.handler;
 
 import android.os.Handler;
 import android.os.Message;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import edu.byu.cs.client.R;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.IsFollowerTask;
-import edu.byu.cs.tweeter.client.view.main.MainActivity;
 
 public class IsFollowerHandler extends Handler {
     private final FollowService.IsFollowerObserver observer;
