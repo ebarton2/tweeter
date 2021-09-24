@@ -1,14 +1,18 @@
 package edu.byu.cs.tweeter.client.model.service;
 
+import android.media.tv.TvContract;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.LoginTask;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.LogoutTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.RegisterTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetUserHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.LoginHandler;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.LogoutHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.RegisterHandler;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -32,6 +36,20 @@ public class UserService
     {
         void handleSuccess(User user, AuthToken authToken);
         void handleFailure(String message);
+    }
+
+    public interface LogoutObserver
+    {
+        void handleSuccess();
+        void handleFailure(String message);
+    }
+
+    public void logout(LogoutObserver observer)
+    {
+        //TODO: Goes into User service
+        LogoutTask logoutTask = new LogoutTask(Cache.getInstance().getCurrUserAuthToken(), new LogoutHandler(observer));
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(logoutTask);
     }
 
     public void getUser(String alias, GetUserObserver getUserObserver)

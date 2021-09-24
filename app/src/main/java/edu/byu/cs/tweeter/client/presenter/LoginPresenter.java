@@ -66,16 +66,19 @@ public class LoginPresenter
     public String validateLogin(String alias, String password)
     {
         String validation = null;
+        if (alias.length() == 0) {// Needed so app won't crash trying to look for a null string at an index
+            return "Alias cannot be empty.";
+        }
         if (alias.charAt(0) != '@') {
-            validation = "Alias must begin with @.";
+            return "Alias must begin with @.";
             //throw new IllegalArgumentException("Alias must begin with @.");
         }
         if (alias.length() < 2) {
-            validation = "Alias must contain 1 or more characters after the @.";
+            return "Alias must contain 1 or more characters after the @.";
             //throw new IllegalArgumentException("Alias must contain 1 or more characters after the @.");
         }
         if (password.length() == 0) {
-            validation = "Password cannot be empty.";
+            return "Password cannot be empty.";
             //throw new IllegalArgumentException();
         }
         return validation;

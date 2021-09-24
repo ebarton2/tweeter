@@ -76,26 +76,26 @@ public class RegisterPresenter
                                        String alias, String password, ImageView image) {
         String validation = null;
         if (firstName.length() == 0) {
-            validation = "First Name cannot be empty.";
+            return "First Name cannot be empty.";
         }
         if (lastName.length() == 0) {
-            validation = "Last Name cannot be empty.";
+            return "Last Name cannot be empty.";
         }
         if (alias.length() == 0) {
-            validation = "Alias cannot be empty.";
+            return "Alias cannot be empty.";
         }
         if (alias.charAt(0) != '@') {
-            validation = "Alias must begin with @.";
+            return "Alias must begin with @.";
         }
         if (alias.length() < 2) {
-            validation = "Alias must contain 1 or more characters after the @.";
+            return "Alias must contain 1 or more characters after the @.";
         }
         if (password.length() == 0) {
-            validation = "Password cannot be empty.";
+            return "Password cannot be empty.";
         }
 
         if (image.getDrawable() == null) {
-            validation = "Profile image must be uploaded.";
+            return "Profile image must be uploaded.";
         }
         return validation;
     }

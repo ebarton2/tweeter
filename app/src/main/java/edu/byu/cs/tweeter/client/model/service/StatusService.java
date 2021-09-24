@@ -7,11 +7,10 @@ import java.util.concurrent.Executors;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFeedTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetStoryTask;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.PostStatusTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFeedHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetStoryHandler;
-import edu.byu.cs.tweeter.client.presenter.StoryPresenter;
-import edu.byu.cs.tweeter.client.view.main.story.StoryFragment;
-import edu.byu.cs.tweeter.model.domain.AuthToken;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.PostStatusHandler;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -29,6 +28,12 @@ public class StatusService
         void handleFailure(String message);
     }
 
+    public interface PostStatusObserver
+    {
+        void handleSuccess();
+        void handleFailure(String message);
+    }
+
     public void getFeed(User user, int pageSize, Status lastStatus, FeedObserver observer)
     {
         GetFeedTask getFeedTask = new GetFeedTask(Cache.getInstance().getCurrUserAuthToken(),
@@ -43,5 +48,13 @@ public class StatusService
                 user, pageSize, lastStatus, new GetStoryHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(getStoryTask);
+    }
+
+    public void postStatus(Status newStatus, PostStatusObserver postStatusObserver)
+    {
+        PostStatusTask statusTask = new PostStatusTask(Cache.getInstance().getCurrUserAuthToken(),
+                newStatus, new PostStatusHandler(postStatusObserver));
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(statusTask);
     }
 }
