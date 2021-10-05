@@ -5,80 +5,37 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import java.io.IOException;
+
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
 /**
  * Background task that establishes a following relationship between two users.
  */
-public class FollowTask implements Runnable {
+public class FollowTask extends AuthorizedTask {
     private static final String LOG_TAG = "FollowTask";
 
-    public static final String SUCCESS_KEY = "success";
-    public static final String MESSAGE_KEY = "message";
-    public static final String EXCEPTION_KEY = "exception";
 
-    /**
-     * Auth token for logged-in user.
-     * This user is the "follower" in the relationship.
-     */
-    private AuthToken authToken;
     /**
      * The user that is being followed.
      */
     private User followee;
-    /**
-     * Message handler that will receive task results.
-     */
-    private Handler messageHandler;
 
     public FollowTask(AuthToken authToken, User followee, Handler messageHandler) {
-        this.authToken = authToken;
+        super(messageHandler, authToken);
         this.followee = followee;
-        this.messageHandler = messageHandler;
     }
 
     @Override
-    public void run() {
-        try {
-
-            sendSuccessMessage();
-
-        } catch (Exception ex) {
-            Log.e(LOG_TAG, ex.getMessage(), ex);
-            sendExceptionMessage(ex);
-        }
+    protected void runTask() throws IOException {
+        //TODO: implement later
     }
 
-    private void sendSuccessMessage() {
-        Bundle msgBundle = new Bundle();
-        msgBundle.putBoolean(SUCCESS_KEY, true);
 
-        Message msg = Message.obtain();
-        msg.setData(msgBundle);
-
-        messageHandler.sendMessage(msg);
+    @Override
+    protected void loadMessageBundle(Bundle msgBundle) {
+        //TODO: implement later
     }
 
-    private void sendFailedMessage(String message) {
-        Bundle msgBundle = new Bundle();
-        msgBundle.putBoolean(SUCCESS_KEY, false);
-        msgBundle.putString(MESSAGE_KEY, message);
-
-        Message msg = Message.obtain();
-        msg.setData(msgBundle);
-
-        messageHandler.sendMessage(msg);
-    }
-
-    private void sendExceptionMessage(Exception exception) {
-        Bundle msgBundle = new Bundle();
-        msgBundle.putBoolean(SUCCESS_KEY, false);
-        msgBundle.putSerializable(EXCEPTION_KEY, exception);
-
-        Message msg = Message.obtain();
-        msg.setData(msgBundle);
-
-        messageHandler.sendMessage(msg);
-    }
 }
