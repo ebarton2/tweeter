@@ -11,28 +11,18 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.PostStatusTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFeedHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetStoryHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.PostStatusHandler;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observers.PagedServiceObserver;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observers.SimpleNotificationServiceObserver;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class StatusService
 {
-    public interface FeedObserver
-    {
-        void handleSuccess(List<Status> statuses, boolean hasMorePages);
-        void handleFailure(String message);
-    }
+    public interface FeedObserver extends PagedServiceObserver {}
 
-    public interface StoryObserver
-    {
-        void handleSuccess(List<Status> statuses, boolean hasMorePages);
-        void handleFailure(String message);
-    }
+    public interface StoryObserver extends PagedServiceObserver {}
 
-    public interface PostStatusObserver
-    {
-        void handleSuccess();
-        void handleFailure(String message);
-    }
+    public interface PostStatusObserver extends SimpleNotificationServiceObserver {}
 
     public void getFeed(User user, int pageSize, Status lastStatus, FeedObserver observer)
     {

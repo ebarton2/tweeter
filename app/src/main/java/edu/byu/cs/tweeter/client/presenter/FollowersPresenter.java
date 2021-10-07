@@ -48,9 +48,9 @@ public class FollowersPresenter
 
             followService.loadMoreItems(user, PAGE_SIZE, lastFollowee, new FollowService.FollowersObserver() {
                 @Override
-                public void handleSuccess(List<User> followers, boolean hasMorePages) {
+                public void handleSuccess(List followers, boolean hasMorePages) {
                     isLoading = false;
-                    FollowersPresenter.this.lastFollowee = (followers.size() > 0) ? followers.get(followers.size() - 1) : null;
+                    FollowersPresenter.this.lastFollowee = (followers.size() > 0) ? (User) followers.get(followers.size() - 1) : null;
                     FollowersPresenter.this.hasMorePages = hasMorePages;
 
 

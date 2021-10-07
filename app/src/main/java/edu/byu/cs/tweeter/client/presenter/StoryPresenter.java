@@ -48,9 +48,9 @@ public class StoryPresenter
             view.addLoadingFooter();
             statusService.getStory(user, PAGE_SIZE, lastStatus, new StatusService.StoryObserver() {
                 @Override
-                public void handleSuccess(List<Status> statuses, boolean hasMorePages) {
+                public void handleSuccess(List statuses, boolean hasMorePages) {
                     isLoading = false;
-                    lastStatus = (statuses.size() > 0 ? statuses.get(statuses.size() - 1) : null);
+                    lastStatus = (Status)(statuses.size() > 0 ? statuses.get(statuses.size() - 1) : null);
                     StoryPresenter.this.hasMorePages = hasMorePages;
                     view.removeLoadingFooter();
                     view.loadMoreItems(statuses);

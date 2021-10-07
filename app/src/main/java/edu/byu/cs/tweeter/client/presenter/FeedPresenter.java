@@ -2,13 +2,9 @@ package edu.byu.cs.tweeter.client.presenter;
 
 import java.net.MalformedURLException;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFeedTask;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -49,9 +45,9 @@ public class FeedPresenter
             view.addLoadingFooter();
             statusService.getFeed(user, PAGE_SIZE, lastStatus, new StatusService.FeedObserver() {
                 @Override
-                public void handleSuccess(List<Status> statuses, boolean hasMorePages) {
+                public void handleSuccess(List statuses, boolean hasMorePages) {
                     isLoading = false;
-                    lastStatus = (statuses.size() > 0 ? statuses.get(statuses.size() - 1) : null);
+                    lastStatus = (Status) (statuses.size() > 0 ? statuses.get(statuses.size() - 1) : null);
                     FeedPresenter.this.hasMorePages = hasMorePages;
                     view.removeLoadingFooter();
                     view.loadMoreItems(statuses);

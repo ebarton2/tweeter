@@ -1,6 +1,5 @@
 package edu.byu.cs.tweeter.client.model.service;
 
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -9,6 +8,7 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.FollowTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowersCountTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowersTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingCountTask;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.IsFollowerTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.UnfollowTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.FollowHandler;
@@ -16,55 +16,30 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFollowe
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFollowersHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFollowingCountHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFollowingHandler;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.IsFollowerHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.UnfollowHandler;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observers.BooleanServiceObserver;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observers.CountServiceObserver;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observers.PagedServiceObserver;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observers.SimpleNotificationServiceObserver;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class FollowService
 {
 
-    public interface FollowingObserver
-    {
-        void handleSuccess(List<User> followees, boolean hasMorePages);
-        void handleFailure(String message);
-    }
+    public interface FollowingObserver extends PagedServiceObserver {}
 
-    public interface FollowersObserver
-    {
-        void handleSuccess(List<User> followees, boolean hasMorePages);
-        void handleFailure(String message);
-    }
+    public interface FollowersObserver extends PagedServiceObserver {}
 
-    public interface FollowObserver
-    {
-        void handleSuccess();
-        void handleFailure(String message);
-    }
+    public interface FollowObserver extends SimpleNotificationServiceObserver {}
 
-    public interface FollowersCountObserver
-    {
-        void handleSuccess(int count);
-        void handleFailure(String message);
-    }
+    public interface FollowersCountObserver extends CountServiceObserver {}
 
-    public interface FollowingCountObserver
-    {
-        void handleSuccess(int count);
-        void handleFailure(String message);
-    }
+    public interface FollowingCountObserver extends CountServiceObserver {}
 
-    public interface IsFollowerObserver
-    {
-        void handleSuccess(boolean isFollower);
-        void handleFailure(String message);
-    }
+    public interface IsFollowerObserver extends BooleanServiceObserver {}
 
-    public interface UnfollowObserver
-    {
-        void handleSuccess();
-        void handleFailure(String message);
-    }
+    public interface UnfollowObserver extends SimpleNotificationServiceObserver {}
 
     public void loadMoreItems(User user, int pageSize, User lastFollowee, FollowingObserver followingObserver) {
         GetFollowingTask getFollowingTask = new GetFollowingTask(Cache.getInstance().getCurrUserAuthToken(),
