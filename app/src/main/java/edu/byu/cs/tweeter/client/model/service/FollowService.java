@@ -24,12 +24,12 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.observers.PagedSer
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.observers.SimpleNotificationServiceObserver;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class FollowService
+public class FollowService extends AbstractServiceTemplate
 {
 
-    public interface FollowingObserver extends PagedServiceObserver {}
+    public interface FollowingObserver extends PagedServiceObserver<User> {}
 
-    public interface FollowersObserver extends PagedServiceObserver {}
+    public interface FollowersObserver extends PagedServiceObserver<User> {}
 
     public interface FollowObserver extends SimpleNotificationServiceObserver {}
 
@@ -44,56 +44,47 @@ public class FollowService
     public void loadMoreItems(User user, int pageSize, User lastFollowee, FollowingObserver followingObserver) {
         GetFollowingTask getFollowingTask = new GetFollowingTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, pageSize, lastFollowee, new GetFollowingHandler(followingObserver));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getFollowingTask);
+        executeTask(getFollowingTask);
     }
 
     public void loadMoreItems(User user, int pageSize, User lastFollowee, FollowersObserver followersObserver) {
         GetFollowersTask getFollowersTask = new GetFollowersTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, pageSize, lastFollowee, new GetFollowersHandler(followersObserver));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getFollowersTask);
+        executeTask(getFollowersTask);
     }
 
     public void isFollower(User selectedUser, IsFollowerObserver observer)
     {
         IsFollowerTask isFollowerTask = new IsFollowerTask(Cache.getInstance().getCurrUserAuthToken(),
                 Cache.getInstance().getCurrUser(), selectedUser, new IsFollowerHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(isFollowerTask);
+        executeTask(isFollowerTask);
     }
 
     public void unfollow(User selectedUser, UnfollowObserver observer)
     {
         UnfollowTask unfollowTask = new UnfollowTask(Cache.getInstance().getCurrUserAuthToken(),
                 selectedUser, new UnfollowHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(unfollowTask);
+        executeTask(unfollowTask);
     }
 
     public void follow(User selectedUser, FollowObserver observer)
     {
         FollowTask followTask = new FollowTask(Cache.getInstance().getCurrUserAuthToken(),
                 selectedUser, new FollowHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(followTask);
+        executeTask(followTask);
     }
 
     public void getFollowersCount(User selectedUser, FollowersCountObserver observer)
     {
-        // Get count of most recently selected user's followers.
         GetFollowersCountTask followersCountTask = new GetFollowersCountTask(Cache.getInstance().getCurrUserAuthToken(),
                 selectedUser, new GetFollowersCountHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(followersCountTask);
+        executeTask(followersCountTask);
     }
 
     public void getFollowingCount(User selectedUser, FollowingCountObserver observer)
     {
-        // Get count of most recently selected user's followees (who they are following)
         GetFollowingCountTask followingCountTask = new GetFollowingCountTask(Cache.getInstance().getCurrUserAuthToken(),
                 selectedUser, new GetFollowingCountHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(followingCountTask);
+        executeTask(followingCountTask);
     }
 }

@@ -7,7 +7,6 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetStoryTask;
  * Message handler (i.e., observer) for GetStoryTask.
  */
 public class GetStoryHandler extends PagedNotificationHandler {
-    private StatusService.StoryObserver observer;
 
     public GetStoryHandler(StatusService.StoryObserver observer)
     {

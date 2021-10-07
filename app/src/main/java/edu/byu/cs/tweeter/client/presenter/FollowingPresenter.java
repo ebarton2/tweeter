@@ -4,80 +4,31 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.client.view.interfaces.PagedViewInterface;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class FollowingPresenter {
-
-    private static final int PAGE_SIZE = 10;
-
-    public interface FollowingView {
-        void displayMoreItems(List<User> followees, boolean hasMorePages);
-        void addLoadingFooter();
-        void removeLoadingFooter();
-        void navigateToUser(User user);
-        void displayInfoMessage(String message);
-        void clearInfoMessage();
-    }
-
-    private FollowingView view;
-    private FollowService followService;
-    private UserService userService;
+public class FollowingPresenter extends UserPagedPresenter<FollowingPresenter.FollowingView>
+{
+    public interface FollowingView extends PagedViewInterface<User> {}
 
 
-    private User lastFollowee;
-    private boolean hasMorePages = true;
-    private boolean isLoading = false;
-
-    public boolean isLoading() {
-        return isLoading;
-    }
-
-    public FollowingPresenter(FollowingView view) {
-        this.view = view;
+    public FollowingPresenter(FollowingView view)
+    {
+        super(view);
         followService = new FollowService();
-        userService = new UserService();
     }
 
-
-    public void loadMoreItems(User user) {
-        if (!isLoading && hasMorePages) {   // This guard is important for avoiding a race condition in the scrolling code.
-            isLoading = true;
-            view.addLoadingFooter();
-
-            followService.loadMoreItems(user, PAGE_SIZE, lastFollowee, new FollowService.FollowingObserver() {
-                @Override
-                public void handleSuccess(List followees, boolean hasMorePages) {
-                    FollowingPresenter.this.lastFollowee = (followees.size() > 0) ? (User) followees.get(followees.size() - 1) : null;
-                    FollowingPresenter.this.hasMorePages = hasMorePages;
-
-                    isLoading = false;
-                    view.removeLoadingFooter();
-                    view.displayMoreItems(followees, hasMorePages);
-                }
-
-                @Override
-                public void handleFailure(String message) {
-                    isLoading = false;
-                    view.removeLoadingFooter();
-                    view.displayInfoMessage(message);
-                }
-            });
-        }
-    }
-
-    public void getUser(String alias) {
-        view.displayInfoMessage("Getting user's profile...");
-        userService.getUser(alias, new UserService.GetUserObserver() {
+    @Override
+    protected void useService(User user) {
+        followService.loadMoreItems(user, PAGE_SIZE, lastUser, new FollowService.FollowingObserver() {
             @Override
-            public void handleSuccess(User user) {
-                view.clearInfoMessage();
-                view.navigateToUser(user);
+            public void handleSuccess(List<User> followees, boolean hasMorePages) {
+                userSuccessHandler(followees, hasMorePages);
             }
 
             @Override
             public void handleFailure(String message) {
-                view.clearInfoMessage();
-                view.displayInfoMessage(message);
+                pagedFailure(message);
             }
         });
     }

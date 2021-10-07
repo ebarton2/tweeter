@@ -14,7 +14,7 @@ public class GetUserHandler extends UserNotificationHandler {
 
     @Override
     protected String getFailedMessagePrefix() {
-        return null;
+        return "Failed to get user's profile";
     }
 
     @Override

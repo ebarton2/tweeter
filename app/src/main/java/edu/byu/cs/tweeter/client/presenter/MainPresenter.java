@@ -22,21 +22,19 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingCountT
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.PostStatusTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFollowingCountHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.PostStatusHandler;
+import edu.byu.cs.tweeter.client.view.interfaces.ViewInterface;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class MainPresenter
+public class MainPresenter extends AbstractPresenter<MainPresenter.MainView>
 {
     private static final String LOG_TAG = "MainActivity";
-    private MainView view;
     private FollowService followService;
     private UserService userService;
     private StatusService statusService;
 
-    public interface MainView
+    public interface MainView extends ViewInterface
     {
-        void infoMessage(String message);
-        void clearInfoMessage();
         void logoutUser();
         void isFollowerButton(boolean isFollower);
         void setFollowerCount(int count);
@@ -47,7 +45,7 @@ public class MainPresenter
 
     public MainPresenter(MainView view)
     {
-        this.view = view;
+        super(view);
         followService = new FollowService();
         userService = new UserService();
         statusService = new StatusService();

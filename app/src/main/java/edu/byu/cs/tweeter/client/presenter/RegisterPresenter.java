@@ -13,32 +13,24 @@ import java.util.concurrent.Executors;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.RegisterTask;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observers.AuthenticationServiceObserver;
+import edu.byu.cs.tweeter.client.view.interfaces.AuthenticationViewInterface;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class RegisterPresenter
+public class RegisterPresenter extends AuthenticationAbstractPresenter<RegisterPresenter.RegisterView>
 {
-    private RegisterPresenter.RegisterView view;
-    private UserService userService;
-
-    public interface RegisterView
-    {
-        void infoMessage(String message);
-        void clearInfoMessage();
-        void setErrorMessage(String message);
-        void navigateToUser(User user);
-    }
+    public interface RegisterView extends AuthenticationViewInterface {}
 
     public RegisterPresenter(RegisterView view)
     {
-        this.view = view;
-        userService = new UserService();
+        super(view);
     }
 
     public void register(String firstName, String lastName,
                          String alias, String password, ImageView image)
     {
-        String validation = validateRegistration(firstName, lastName, alias, password, image);
+        String validation = validate(firstName, lastName, alias, password, image);
         if(validation == null) {
             view.setErrorMessage(validation);
             view.infoMessage("Registering...");
@@ -50,7 +42,6 @@ public class RegisterPresenter
             byte[] imageBytes = bos.toByteArray();
             String imageBytesBase64 = Base64.encodeToString(imageBytes, Base64.NO_WRAP);
 
-            // Send register request.
 
             userService.register(firstName, lastName, alias, password, imageBytesBase64, new UserService.RegisterObserver() {
                 @Override
@@ -70,33 +61,5 @@ public class RegisterPresenter
         } else {
             view.setErrorMessage(validation);
         }
-    }
-
-    public String validateRegistration(String firstName, String lastName,
-                                       String alias, String password, ImageView image) {
-        String validation = null;
-        if (firstName.length() == 0) {
-            return "First Name cannot be empty.";
-        }
-        if (lastName.length() == 0) {
-            return "Last Name cannot be empty.";
-        }
-        if (alias.length() == 0) {
-            return "Alias cannot be empty.";
-        }
-        if (alias.charAt(0) != '@') {
-            return "Alias must begin with @.";
-        }
-        if (alias.length() < 2) {
-            return "Alias must contain 1 or more characters after the @.";
-        }
-        if (password.length() == 0) {
-            return "Password cannot be empty.";
-        }
-
-        if (image.getDrawable() == null) {
-            return "Profile image must be uploaded.";
-        }
-        return validation;
     }
 }

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +79,11 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Fo
 
         followingRecyclerViewAdapter = new FollowingRecyclerViewAdapter();
         followingRecyclerView.setAdapter(followingRecyclerViewAdapter);
-        presenter.loadMoreItems(user);
+        try {
+            presenter.loadMoreItems(user);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
 
         followingRecyclerView.addOnScrollListener(new FollowRecyclerViewPaginationScrollListener(layoutManager));
 
@@ -86,8 +91,8 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Fo
     }
 
     @Override
-    public void displayMoreItems(List<User> followees, boolean hasMorePages) {
-        followingRecyclerViewAdapter.displayMoreItems(followees, hasMorePages);
+    public void loadMoreItems(List<User> followees) {
+        followingRecyclerViewAdapter.displayMoreItems(followees);
     }
 
     @Override
@@ -108,7 +113,7 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Fo
     }
 
     @Override
-    public void displayInfoMessage(String message) {
+    public void infoMessage(String message) {
         infoToast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
         infoToast.show();
     }
@@ -266,11 +271,11 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Fo
          * Causes the Adapter to display a loading footer and make a request to get more following
          * data.
          */
-        public void loadMoreItems() {
+        public void loadMoreItems() throws MalformedURLException {
             presenter.loadMoreItems(user);
         }
 
-        public void displayMoreItems(List<User> followees, boolean hasMorePages) {
+        public void displayMoreItems(List<User> followees) {
             followingRecyclerViewAdapter.addItems(followees);
         }
 
@@ -330,7 +335,11 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Fo
                 // Run this code later on the UI thread
                 final Handler handler = new Handler(Looper.getMainLooper());
                 handler.postDelayed(() -> {
-                    followingRecyclerViewAdapter.loadMoreItems();
+                    try {
+                        followingRecyclerViewAdapter.loadMoreItems();
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
                 }, 0);
             }
         }
