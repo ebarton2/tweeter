@@ -2,10 +2,13 @@ package edu.byu.cs.tweeter.client.presenter;
 
 import android.widget.ImageView;
 
+import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.client.view.interfaces.AuthenticationViewInterface;
+import edu.byu.cs.tweeter.model.domain.AuthToken;
+import edu.byu.cs.tweeter.model.domain.User;
 
-public class AuthenticationAbstractPresenter<T extends AuthenticationViewInterface> extends AbstractPresenter<T>
+public abstract class AuthenticationAbstractPresenter<T extends AuthenticationViewInterface> extends AbstractPresenter<T>
 {
     protected UserService userService;
 
@@ -43,4 +46,14 @@ public class AuthenticationAbstractPresenter<T extends AuthenticationViewInterfa
 
         return validation;
     }
+
+    protected void authenticateSuccess(User user, AuthToken authToken)
+    {
+        Cache.getInstance().setCurrUser(user);
+        Cache.getInstance().setCurrUserAuthToken(authToken);
+        view.clearInfoMessage();
+        view.infoMessage("Hello " + Cache.getInstance().getCurrUser().getName());
+        view.navigateToUser(user);
+    }
+
 }

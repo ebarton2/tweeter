@@ -25,11 +25,7 @@ public class LoginPresenter extends AuthenticationAbstractPresenter<LoginPresent
             userService.login(alias, password, new UserService.LoginObserver() {
                 @Override
                 public void handleSuccess(User user, AuthToken authToken) {
-                    Cache.getInstance().setCurrUser(user);
-                    Cache.getInstance().setCurrUserAuthToken(authToken);
-                    view.clearInfoMessage();
-                    view.infoMessage("Hello " + Cache.getInstance().getCurrUser().getName());
-                    view.navigateToUser(user);
+                    authenticateSuccess(user, authToken);
                 }
 
                 @Override

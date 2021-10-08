@@ -42,15 +42,10 @@ public class RegisterPresenter extends AuthenticationAbstractPresenter<RegisterP
             byte[] imageBytes = bos.toByteArray();
             String imageBytesBase64 = Base64.encodeToString(imageBytes, Base64.NO_WRAP);
 
-
             userService.register(firstName, lastName, alias, password, imageBytesBase64, new UserService.RegisterObserver() {
                 @Override
                 public void handleSuccess(User user, AuthToken authToken) {
-                    Cache.getInstance().setCurrUser(user);
-                    Cache.getInstance().setCurrUserAuthToken(authToken);
-                    view.clearInfoMessage();
-                    view.infoMessage("Hello" + Cache.getInstance().getCurrUser().getName());
-                    view.navigateToUser(user);
+                    authenticateSuccess(user, authToken);
                 }
 
                 @Override
