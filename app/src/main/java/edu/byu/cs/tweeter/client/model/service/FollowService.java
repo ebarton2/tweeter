@@ -23,6 +23,7 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.observers.CountSer
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.observers.PagedServiceObserver;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.observers.SimpleNotificationServiceObserver;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.request.FollowingCountRequest;
 
 public class FollowService extends AbstractServiceTemplate
 {
@@ -83,8 +84,8 @@ public class FollowService extends AbstractServiceTemplate
 
     public void getFollowingCount(User selectedUser, FollowingCountObserver observer)
     {
-        GetFollowingCountTask followingCountTask = new GetFollowingCountTask(Cache.getInstance().getCurrUserAuthToken(),
-                selectedUser, new GetFollowingCountHandler(observer));
+        GetFollowingCountTask followingCountTask = new GetFollowingCountTask(new FollowingCountRequest(Cache.getInstance().getCurrUserAuthToken(),
+                selectedUser), new GetFollowingCountHandler(observer));
         executeTask(followingCountTask);
     }
 }

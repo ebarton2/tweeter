@@ -6,22 +6,30 @@ import android.os.Handler;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
+import edu.byu.cs.tweeter.model.domain.User;
 
 public abstract class CountTask extends AuthorizedTask {
     public static final String COUNT_KEY = "count";
 
-    public CountTask(Handler messageHandler, AuthToken authToken) {
+    private User targetUser;
+
+    private int count = 0;
+
+    public CountTask(Handler messageHandler, AuthToken authToken, User user) {
         super(messageHandler, authToken);
+        this.targetUser = user;
     }
 
+    public int getCount() {
+        return count;
+    }
 
-    @Override
-    protected void runTask() throws IOException {
-
+    public void setCount(int count) {
+        this.count = count;
     }
 
     @Override
     protected void loadMessageBundle(Bundle msgBundle) {
-        msgBundle.putInt(COUNT_KEY, 20);
+        msgBundle.putInt(COUNT_KEY, count);
     }
 }

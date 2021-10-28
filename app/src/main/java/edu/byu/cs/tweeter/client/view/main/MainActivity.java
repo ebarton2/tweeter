@@ -60,8 +60,6 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
 
     public static final String CURRENT_USER_KEY = "CurrentUser";
 
-    private Toast logOutToast;
-    private Toast postingToast;
     private User selectedUser;
     private TextView followeeCount;
     private TextView followerCount;

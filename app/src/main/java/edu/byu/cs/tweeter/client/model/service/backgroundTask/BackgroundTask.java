@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
+import edu.byu.cs.tweeter.client.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.util.FakeData;
 
@@ -18,6 +19,8 @@ public abstract class BackgroundTask implements Runnable {
     public static final String EXCEPTION_KEY = "exception";
 
     private static final String LOG_TAG = "BackgroundTask";
+
+    private ServerFacade serverFacade;
 
     /**
      * Message handler that will receive task results.
@@ -45,7 +48,7 @@ public abstract class BackgroundTask implements Runnable {
         return new FakeData();
     }
 
-    private void sendSuccessMessage() {
+    protected void sendSuccessMessage() {
         Bundle msgBundle = createBundle(true);
         loadMessageBundle(msgBundle);
 
@@ -55,13 +58,13 @@ public abstract class BackgroundTask implements Runnable {
     protected abstract void loadMessageBundle(Bundle msgBundle);
 
 
-    private void sendFailedMessage(String message) {
+    protected void sendFailedMessage(String message) {
         Bundle msgBundle = createBundle(false);
         msgBundle.putString(MESSAGE_KEY, message);
         sendMessage(msgBundle);
     }
 
-    private void sendExceptionMessage(Exception exception) {
+    protected void sendExceptionMessage(Exception exception) {
         Bundle msgBundle = createBundle(false);
         msgBundle.putSerializable(EXCEPTION_KEY, exception);
         sendMessage(msgBundle);
@@ -79,5 +82,10 @@ public abstract class BackgroundTask implements Runnable {
         msg.setData(msgBundle);
 
         messageHandler.sendMessage(msg);
+    }
+
+    public ServerFacade getServerFacade() {
+        if(serverFacade == null) serverFacade = new ServerFacade();
+        return serverFacade;
     }
 }

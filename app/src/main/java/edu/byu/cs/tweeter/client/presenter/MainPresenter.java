@@ -46,14 +46,35 @@ public class MainPresenter extends AbstractPresenter<MainPresenter.MainView>
     public MainPresenter(MainView view)
     {
         super(view);
-        followService = new FollowService();
-        userService = new UserService();
-        statusService = new StatusService();
+        followService = getFollowService();
+        userService = getUserService();
+        statusService = getStatusService();
+    }
+
+    public UserService getUserService() {
+        if(userService == null){
+            userService = new UserService();
+        }
+        return userService;
+    }
+
+    public StatusService getStatusService() {
+        if(statusService == null){
+            statusService = new StatusService();
+        }
+        return statusService;
+    }
+
+    public FollowService getFollowService() {
+        if(followService == null){
+            followService = new FollowService();
+        }
+        return followService;
     }
 
     public void unfollow(User selectedUser) //TODO: Unfinished
     {
-        followService.unfollow(selectedUser, new FollowService.UnfollowObserver() {
+        getFollowService().unfollow(selectedUser, new FollowService.UnfollowObserver() {
             @Override
             public void handleSuccess()
             {
@@ -73,7 +94,7 @@ public class MainPresenter extends AbstractPresenter<MainPresenter.MainView>
 
     public void follow(User selectedUser) //TODO: Unfinished
     {
-        followService.follow(selectedUser, new FollowService.FollowObserver() {
+        getFollowService().follow(selectedUser, new FollowService.FollowObserver() {
             @Override
             public void handleSuccess() {
                 updateSelectedUserFollowingAndFollowers(selectedUser);
@@ -91,7 +112,7 @@ public class MainPresenter extends AbstractPresenter<MainPresenter.MainView>
 
     public void isFollower(User selectedUser)
     {
-        followService.isFollower(selectedUser, new FollowService.IsFollowerObserver() {
+        getFollowService().isFollower(selectedUser, new FollowService.IsFollowerObserver() {
             @Override
             public void handleSuccess(boolean isFollower)
             {
@@ -108,7 +129,7 @@ public class MainPresenter extends AbstractPresenter<MainPresenter.MainView>
     public void logoutUser()
     {
         view.infoMessage("Logging Out...");
-        userService.logout(new UserService.LogoutObserver() {
+        getUserService().logout(new UserService.LogoutObserver() {
             @Override
             public void handleSuccess() {
                 view.clearInfoMessage();
@@ -124,7 +145,7 @@ public class MainPresenter extends AbstractPresenter<MainPresenter.MainView>
     }
 
     public void updateSelectedUserFollowingAndFollowers(User selectedUser) { //TODO: Goes into a service
-        followService.getFollowersCount(selectedUser, new FollowService.FollowersCountObserver() {
+        getFollowService().getFollowersCount(selectedUser, new FollowService.FollowersCountObserver() {
             @Override
             public void handleSuccess(int count) {
                 view.setFollowerCount(count);
@@ -135,7 +156,7 @@ public class MainPresenter extends AbstractPresenter<MainPresenter.MainView>
                 view.infoMessage(message);
             }
         });
-        followService.getFollowingCount(selectedUser, new FollowService.FollowingCountObserver() {
+        getFollowService().getFollowingCount(selectedUser, new FollowService.FollowingCountObserver() {
             @Override
             public void handleSuccess(int count) {
                 view.setFollowingCount(count);
@@ -154,7 +175,7 @@ public class MainPresenter extends AbstractPresenter<MainPresenter.MainView>
         try {
             Status newStatus = new Status(post, Cache.getInstance().getCurrUser(), getFormattedDateTime(), parseURLs(post), parseMentions(post));
 
-            statusService.postStatus(newStatus, new StatusService.PostStatusObserver(){
+            getStatusService().postStatus(newStatus, new StatusService.PostStatusObserver(){
                 @Override
                 public void handleSuccess() {
                     view.clearInfoMessage();
