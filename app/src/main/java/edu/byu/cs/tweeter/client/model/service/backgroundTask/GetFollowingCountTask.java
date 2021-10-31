@@ -28,7 +28,7 @@ public class GetFollowingCountTask extends CountTask {
      */
 
 
-    public GetFollowingCountTask(FollowingCountRequest request,/*AuthToken authToken, User targetUser, */Handler messageHandler) {
+    public GetFollowingCountTask(FollowingCountRequest request, Handler messageHandler) {
         super(messageHandler,request.getAuthToken(), request.getUser());
         this.request = request;
     }
@@ -40,6 +40,8 @@ public class GetFollowingCountTask extends CountTask {
             if(response.isSuccess()){
                 setCount(response.getCount());
                 sendSuccessMessage();
+            } else {
+                sendFailedMessage(response.getMessage());
             }
         } catch (IOException e) {
             e.printStackTrace();
