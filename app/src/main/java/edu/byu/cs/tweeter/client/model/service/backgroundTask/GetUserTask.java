@@ -5,8 +5,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import java.io.IOException;
+
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.net.request.GetUserRequest;
+import edu.byu.cs.tweeter.model.net.response.GetUserResponse;
 import edu.byu.cs.tweeter.util.FakeData;
 
 /**
@@ -14,6 +19,7 @@ import edu.byu.cs.tweeter.util.FakeData;
  */
 public class GetUserTask extends AuthorizedTask {
     private static final String LOG_TAG = "GetUserTask";
+    private static final String URL_PATH = "/getuser";
     public static final String USER_KEY = "user";
 
     /**
@@ -21,22 +27,33 @@ public class GetUserTask extends AuthorizedTask {
      */
     private String alias;
 
-
+    private User targetUser;
+    private GetUserRequest request;
 
     public GetUserTask(AuthToken authToken, String alias, Handler messageHandler) {
         super(messageHandler, authToken);
         this.authToken = authToken;
         this.alias = alias;
+        this.request = new GetUserRequest(alias, authToken);
     }
 
     @Override
-    protected void runTask() {
+    protected void runTask() throws IOException {
         //TODO: Fix when we switch to live data rather than dummy data
+        try {
+            GetUserResponse response = getServerFacade().getUser(request, URL_PATH);
+            if (response.isSuccess()) {
+                targetUser = response.getTargetUser();
+                BackgroundTaskUtils.loadImage(targetUser);
+            }
+        } catch (TweeterRemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void loadMessageBundle(Bundle msgBundle) {
-        msgBundle.putSerializable(USER_KEY, getUser());
+        msgBundle.putSerializable(USER_KEY, targetUser);
     }
 
     private User getUser() {

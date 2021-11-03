@@ -13,6 +13,10 @@ import java.util.stream.Collectors;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.net.request.FeedRequest;
+import edu.byu.cs.tweeter.model.net.response.FeedResponse;
+import edu.byu.cs.tweeter.model.net.response.FollowersResponse;
 import edu.byu.cs.tweeter.util.FakeData;
 import edu.byu.cs.tweeter.util.Pair;
 
@@ -21,6 +25,7 @@ import edu.byu.cs.tweeter.util.Pair;
  */
 public class GetFeedTask extends PagedTask<Status> {
     private static final String LOG_TAG = "GetFeedTask";
+    private static final String URL_PATH = "/getfeed";
 
     /**
      * The user whose feed is being retrieved.
@@ -28,10 +33,36 @@ public class GetFeedTask extends PagedTask<Status> {
      */
     private User targetUser;
 
+    private FeedRequest request;
+
     public GetFeedTask(AuthToken authToken, User targetUser, int limit, Status lastStatus,
                        Handler messageHandler) {
         super(messageHandler, authToken, limit, lastStatus);
+        if (lastStatus == null) {
+            this.request = new FeedRequest(authToken, targetUser.getAlias(), limit, null);
+        } else {
+            this.request = new FeedRequest(authToken, targetUser.getAlias(), limit, lastStatus);
+        }
         this.targetUser = targetUser;
+    }
+
+    @Override
+    protected void runTask() throws IOException {
+        try {
+            FeedResponse response = getServerFacade().getFeed(request, URL_PATH);
+            if(response.isSuccess()) {
+                items = response.getStatuses();
+                hasMorePages = response.getHasMorePages();
+
+                loadImages(items);
+            } else {
+                sendFailedMessage(response.getMessage());
+            }
+        } catch (TweeterRemoteException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

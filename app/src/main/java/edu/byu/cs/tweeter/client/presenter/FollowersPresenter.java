@@ -18,7 +18,7 @@ public class FollowersPresenter extends UserPagedPresenter<FollowersPresenter.Fo
 
     @Override
     protected void useService(User user) {
-        followService.loadMoreItems(user, PAGE_SIZE, lastUser, new FollowService.FollowersObserver() {
+        followService.loadMoreFollowers(user, PAGE_SIZE, lastUser, new FollowService.FollowersObserver() {
             @Override
             public void handleSuccess(List<User> followers, boolean hasMorePages) {
                 userSuccessHandler(followers, hasMorePages);

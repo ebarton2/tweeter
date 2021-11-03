@@ -3,7 +3,6 @@ package edu.byu.cs.tweeter.client.presenter;
 import java.util.List;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
-import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.client.view.interfaces.PagedViewInterface;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -20,7 +19,7 @@ public class FollowingPresenter extends UserPagedPresenter<FollowingPresenter.Fo
 
     @Override
     protected void useService(User user) {
-        followService.loadMoreItems(user, PAGE_SIZE, lastUser, new FollowService.FollowingObserver() {
+        followService.loadMoreFollowing(user, PAGE_SIZE, lastUser, new FollowService.FollowingObserver() {
             @Override
             public void handleSuccess(List<User> followees, boolean hasMorePages) {
                 userSuccessHandler(followees, hasMorePages);

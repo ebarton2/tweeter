@@ -1,11 +1,19 @@
 package edu.byu.cs.tweeter.server.service;
 
+import edu.byu.cs.tweeter.model.net.request.FollowRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowerCountRequest;
+import edu.byu.cs.tweeter.model.net.request.FollowersRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowingCountRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowingRequest;
+import edu.byu.cs.tweeter.model.net.request.IsFollowerRequest;
+import edu.byu.cs.tweeter.model.net.request.UnfollowRequest;
+import edu.byu.cs.tweeter.model.net.response.FollowResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowerCountResponse;
+import edu.byu.cs.tweeter.model.net.response.FollowersResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowingCountResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowingResponse;
+import edu.byu.cs.tweeter.model.net.response.IsFollowerResponse;
+import edu.byu.cs.tweeter.model.net.response.UnfollowResponse;
 import edu.byu.cs.tweeter.server.dao.FollowDAO;
 
 /**
@@ -26,12 +34,28 @@ public class FollowService {
         return getFollowingDAO().getFollowees(request);
     }
 
+    public FollowersResponse getFollowers(FollowersRequest request) {
+        return getFollowingDAO().getFollowers(request);
+    }
+
     public FollowingCountResponse getFollowingCount(FollowingCountRequest request) {
         return getFollowingDAO().getFollowingCount(request);
     }
 
     public FollowerCountResponse getFollowerCount(FollowerCountRequest request) {
         return getFollowingDAO().getFollowerCount(request);
+    }
+
+    public IsFollowerResponse getIsFollower(IsFollowerRequest request) {
+        return getFollowingDAO().getIsFollower(request);
+    }
+
+    public FollowResponse getFollow(FollowRequest request) {
+        return getFollowingDAO().getFollow(request);
+    }
+
+    public UnfollowResponse getUnfollow(UnfollowRequest request) {
+        return getFollowingDAO().getUnfollow(request);
     }
 
     /**
@@ -44,4 +68,6 @@ public class FollowService {
     FollowDAO getFollowingDAO() {
         return new FollowDAO();
     }
+
+
 }

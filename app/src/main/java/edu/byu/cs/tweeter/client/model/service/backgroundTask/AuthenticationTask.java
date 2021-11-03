@@ -16,31 +16,21 @@ public abstract class AuthenticationTask extends BackgroundTask {
     /**
      * The user's username (or "alias" or "handle"). E.g., "@susan".
      */
-    private String username;
+    protected String username;
     /**
      * The user's password.
      */
-    private String password;
+    protected String password;
 
 
-    private User currentUser;
-    private AuthToken authToken;
+    protected User currentUser;
+    protected AuthToken authToken;
 
 
     public AuthenticationTask(String username, String password, Handler messageHandler) {
         super(messageHandler);
         this.username = username;
         this.password = password;
-    }
-
-    @Override
-    protected void runTask() throws IOException {
-        Pair<User, AuthToken> authenticateResult = doSignIn();
-
-        currentUser = authenticateResult.getFirst();
-        authToken = authenticateResult.getSecond();
-
-        BackgroundTaskUtils.loadImage(currentUser);
     }
 
     @Override

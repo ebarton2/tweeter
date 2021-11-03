@@ -2,14 +2,23 @@ package edu.byu.cs.tweeter.server.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.request.FollowRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowerCountRequest;
+import edu.byu.cs.tweeter.model.net.request.FollowersRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowingCountRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowingRequest;
+import edu.byu.cs.tweeter.model.net.request.IsFollowerRequest;
+import edu.byu.cs.tweeter.model.net.request.UnfollowRequest;
+import edu.byu.cs.tweeter.model.net.response.FollowResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowerCountResponse;
+import edu.byu.cs.tweeter.model.net.response.FollowersResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowingCountResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowingResponse;
+import edu.byu.cs.tweeter.model.net.response.IsFollowerResponse;
+import edu.byu.cs.tweeter.model.net.response.UnfollowResponse;
 import edu.byu.cs.tweeter.server.util.FakeData;
 
 /**
@@ -47,8 +56,11 @@ public class FollowDAO {
      */
     public FollowingResponse getFollowees(FollowingRequest request) {
         // TODO: Generates dummy data. Replace with a real implementation.
+        boolean success = true;
         assert request.getLimit() > 0;
+        if (request.getLimit() <= 0) success = false;
         assert request.getFollowerAlias() != null;
+        if (request.getFollowerAlias() == null) success = false;
 
         List<User> allFollowees = getDummyFollowees();
         List<User> responseFollowees = new ArrayList<>(request.getLimit());
@@ -67,8 +79,38 @@ public class FollowDAO {
             }
         }
 
-        return new FollowingResponse(responseFollowees, hasMorePages);
+        return new FollowingResponse(responseFollowees, success, hasMorePages);
     }
+
+    public FollowersResponse getFollowers(FollowersRequest request) {
+        // TODO: Generates dummy data. Replace with a real implementation.
+        boolean success = true;
+        assert request.getLimit() > 0;
+        if (request.getLimit() <= 0) success = false;
+        assert request.getFolloweeAlias() != null;
+        if (request.getFolloweeAlias() == null) success = false;
+
+        List<User> allFollowers = getDummyFollowers();
+        List<User> responseFollowees = new ArrayList<>(request.getLimit());
+
+        boolean hasMorePages = false;
+
+        if(request.getLimit() > 0) {
+            if (allFollowers != null) {
+                int followersIndex = getFollowersStartingIndex(request.getLastFollowerAlias(), allFollowers);
+
+                for(int limitCounter = 0; followersIndex < allFollowers.size() && limitCounter < request.getLimit(); followersIndex++, limitCounter++) {
+                    responseFollowees.add(allFollowers.get(followersIndex));
+                }
+
+                hasMorePages = followersIndex < allFollowers.size();
+            }
+        }
+
+        return new FollowersResponse(responseFollowees, success, hasMorePages);
+    }
+
+
 
     public FollowingCountResponse getFollowingCount(FollowingCountRequest request) {
         assert request.getUser() != null;
@@ -89,6 +131,18 @@ public class FollowDAO {
         if (follower != null) response = new FollowerCountResponse(true, getDummyFollowers().size());
         else response = new FollowerCountResponse(false, "Unable to find user", 0);
 
+        return response;
+    }
+
+    public IsFollowerResponse getIsFollower(IsFollowerRequest request) {
+        IsFollowerResponse response;
+        if (request.getFollowee() == null || request.getFollower() == null) {
+            response = new IsFollowerResponse(false, "Unable to connect User or Follower");
+
+        } else {
+            //TODO: Note that this is currently random
+            response = new IsFollowerResponse(true, new Random().nextInt() > 0);
+        }
         return response;
     }
 
@@ -122,6 +176,50 @@ public class FollowDAO {
         return followeesIndex;
     }
 
+    private int getFollowersStartingIndex(String lastFollowerAlias, List<User> allFollowers) {
+        int followeesIndex = 0;
+
+        if(lastFollowerAlias != null) {
+            // This is a paged request for something after the first page. Find the first item
+            // we should return
+            for (int i = 0; i < allFollowers.size(); i++) {
+                if(lastFollowerAlias.equals(allFollowers.get(i).getAlias())) {
+                    // We found the index of the last item returned last time. Increment to get
+                    // to the first one we should return
+                    followeesIndex = i + 1;
+                    break;
+                }
+            }
+        }
+
+        return followeesIndex;
+    }
+
+    public FollowResponse getFollow(FollowRequest request) {
+        FollowResponse response;
+        if (request.getFollowee() == null) {
+            response = new FollowResponse(false, "Unable to connect User or Follower");
+
+        } else {
+            //TODO: Note that this is currently random
+            response = new FollowResponse(true);
+        }
+        return response;
+    }
+
+    public UnfollowResponse getUnfollow(UnfollowRequest request) {
+        UnfollowResponse response;
+        if (request.getFollower() == null) {
+            response = new UnfollowResponse(false, "Unable to connect User or Follower");
+
+        } else {
+            //TODO: Note that this is currently random
+            response = new UnfollowResponse(true);
+        }
+        return response;
+
+    }
+
     /**
      * Returns the list of dummy followee data. This is written as a separate method to allow
      * mocking of the followees.
@@ -143,4 +241,6 @@ public class FollowDAO {
     FakeData getFakeData() {
         return new FakeData();
     }
+
+
 }

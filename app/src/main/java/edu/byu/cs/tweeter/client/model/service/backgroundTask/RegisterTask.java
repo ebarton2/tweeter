@@ -9,6 +9,10 @@ import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.net.request.RegisterRequest;
+import edu.byu.cs.tweeter.model.net.response.LoginResponse;
+import edu.byu.cs.tweeter.model.net.response.RegisterResponse;
 import edu.byu.cs.tweeter.util.FakeData;
 import edu.byu.cs.tweeter.util.Pair;
 
@@ -17,7 +21,7 @@ import edu.byu.cs.tweeter.util.Pair;
  */
 public class RegisterTask extends AuthenticationTask {
     private static final String LOG_TAG = "RegisterTask";
-
+    private static final String URL_PATH = "/register";
 
     /**
      * The user's first name.
@@ -32,11 +36,30 @@ public class RegisterTask extends AuthenticationTask {
      */
     private String image;
 
+    private RegisterRequest request;
+
     public RegisterTask(String firstName, String lastName, String username, String password,
                         String image, Handler messageHandler) {
         super(username, password, messageHandler);
         this.firstName = firstName;
         this.lastName = lastName;
         this.image = image;
+        this.request = new RegisterRequest(username, password, firstName, lastName, image);
+    }
+
+    @Override
+    protected void runTask() throws IOException {
+        try{
+            RegisterResponse response = getServerFacade().register(request, URL_PATH);
+            if(response.isSuccess()){
+                currentUser = response.getUser();
+                authToken = response.getAuthToken();
+                BackgroundTaskUtils.loadImage(currentUser);
+            } else {
+                sendFailedMessage(response.getMessage());
+            }
+        } catch (TweeterRemoteException e) {
+            e.printStackTrace();
+        }
     }
 }

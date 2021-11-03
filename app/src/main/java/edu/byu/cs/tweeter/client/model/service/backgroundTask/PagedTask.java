@@ -18,15 +18,15 @@ public abstract class PagedTask<T> extends AuthorizedTask {
     /**
      * Maximum number of followed users to return (i.e., page size).
      */
-    private int limit;
+    protected int limit;
     /**
      * The last person being followed returned in the previous page of results (can be null).
      * This allows the new page to begin where the previous page ended.
      */
-    private T lastItem;
+    protected T lastItem;
 
-    private List<T> items;
-    private boolean hasMorePages;
+    protected List<T> items;
+    protected boolean hasMorePages;
 
     public PagedTask(Handler messageHandler, AuthToken authToken, int limit, T lastItem) {
         super(messageHandler, authToken);
@@ -42,15 +42,7 @@ public abstract class PagedTask<T> extends AuthorizedTask {
         return limit;
     }
 
-    @Override
-    protected void runTask() throws IOException {
-        Pair<List<T>, Boolean> pageOfUsers = getItems();
-
-        items = pageOfUsers.getFirst();
-        hasMorePages = pageOfUsers.getSecond();
-
-        loadImages(items);
-    }
+    public void setLimit(int limit) { this.limit = limit; }
 
     protected abstract Pair<List<T>, Boolean> getItems();
 
@@ -62,7 +54,7 @@ public abstract class PagedTask<T> extends AuthorizedTask {
         msgBundle.putBoolean(MORE_PAGES_KEY, hasMorePages);
     }
 
-    private void loadImages(List<T> items) throws IOException {
+    protected void loadImages(List<T> items) throws IOException {
         for (User u : convertItemsToUsers(items)) {
             BackgroundTaskUtils.loadImage(u);
         }

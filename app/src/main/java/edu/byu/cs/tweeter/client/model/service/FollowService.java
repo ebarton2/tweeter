@@ -25,6 +25,7 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.observers.SimpleNo
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.request.FollowerCountRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowingCountRequest;
+import edu.byu.cs.tweeter.model.net.request.FollowingRequest;
 
 public class FollowService extends AbstractServiceTemplate
 {
@@ -43,13 +44,13 @@ public class FollowService extends AbstractServiceTemplate
 
     public interface UnfollowObserver extends SimpleNotificationServiceObserver {}
 
-    public void loadMoreItems(User user, int pageSize, User lastFollowee, FollowingObserver followingObserver) {
+    public void loadMoreFollowing(User user, int pageSize, User lastFollowee, FollowingObserver followingObserver) {
         GetFollowingTask getFollowingTask = new GetFollowingTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, pageSize, lastFollowee, new GetFollowingHandler(followingObserver));
         executeTask(getFollowingTask);
     }
 
-    public void loadMoreItems(User user, int pageSize, User lastFollowee, FollowersObserver followersObserver) {
+    public void loadMoreFollowers(User user, int pageSize, User lastFollowee, FollowersObserver followersObserver) {
         GetFollowersTask getFollowersTask = new GetFollowersTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, pageSize, lastFollowee, new GetFollowersHandler(followersObserver));
         executeTask(getFollowersTask);
