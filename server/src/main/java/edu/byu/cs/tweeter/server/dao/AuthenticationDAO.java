@@ -16,6 +16,10 @@ public class AuthenticationDAO {
 
     public RegisterResponse register(RegisterRequest request) {
         // TODO: Generates dummy data. Replace with a real implementation.
+        if(request.getPassword() == null || request.getUsername() == null
+                || request.getFirstName() == null || request.getLastName() == null
+                || request.getImage() == null) return new RegisterResponse("Failed to register");
+
         User user = getDummyUser();
         AuthToken authToken = getDummyAuthToken();
         return new RegisterResponse(user, authToken);
@@ -24,6 +28,7 @@ public class AuthenticationDAO {
     public LoginResponse login(LoginRequest request) {
 
         // TODO: Generates dummy data. Replace with a real implementation.
+        if(request.getPassword() == null || request.getUsername() == null) return new LoginResponse("Failed to login");
         User user = getDummyUser();
         AuthToken authToken = getDummyAuthToken();
         return new LoginResponse(user, authToken);
