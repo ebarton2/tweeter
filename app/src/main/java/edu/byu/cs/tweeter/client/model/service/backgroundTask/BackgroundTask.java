@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import edu.byu.cs.tweeter.client.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.util.FakeData;
 
 public abstract class BackgroundTask implements Runnable {
@@ -42,7 +43,7 @@ public abstract class BackgroundTask implements Runnable {
         }
     }
 
-    protected abstract void runTask() throws IOException;
+    protected abstract void runTask() throws IOException, TweeterRemoteException;
 
     protected FakeData getFakeData() {
         return new FakeData();

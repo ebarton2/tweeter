@@ -38,17 +38,14 @@ public class PostStatusTask extends AuthorizedTask {
     }
 
     @Override
-    protected void runTask() throws IOException {
-        try {
+    protected void runTask() throws IOException, TweeterRemoteException {
             PostStatusResponse response = getServerFacade().postStatus(request, URL_PATH);
             if (response.isSuccess()) {
                 System.out.println("I posted something!");
             } else {
                 throw new IOException(response.getMessage());
             }
-        } catch (TweeterRemoteException e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override

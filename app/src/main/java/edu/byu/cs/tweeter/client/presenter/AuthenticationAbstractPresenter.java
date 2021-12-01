@@ -51,6 +51,9 @@ public abstract class AuthenticationAbstractPresenter<T extends AuthenticationVi
     {
         Cache.getInstance().setCurrUser(user);
         Cache.getInstance().setCurrUserAuthToken(authToken);
+        if (Cache.getInstance().getCurrUser() == null) {
+            System.out.println("You're a fool of a Took");
+        }
         view.clearInfoMessage();
         view.infoMessage("Hello " + Cache.getInstance().getCurrUser().getName());
         view.navigateToUser(user);

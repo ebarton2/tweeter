@@ -41,8 +41,7 @@ public class GetFollowingTask extends PagedTask<User>{
     }
 
     @Override
-    protected void runTask() throws IOException {
-        try {
+    protected void runTask() throws IOException, TweeterRemoteException {
             FollowingResponse response = getServerFacade().getFollowees(request, URL_PATH);
             if(response.isSuccess()) {
                 items = response.getFollowees();
@@ -50,13 +49,9 @@ public class GetFollowingTask extends PagedTask<User>{
 
                 loadImages(items);
             } else {
-                sendFailedMessage(response.getMessage());
+                throw new IOException(response.getMessage());
             }
-        } catch (TweeterRemoteException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override

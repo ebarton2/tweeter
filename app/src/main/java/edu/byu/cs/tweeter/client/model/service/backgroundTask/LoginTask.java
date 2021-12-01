@@ -23,18 +23,15 @@ public class LoginTask extends AuthenticationTask {
     }
 
     @Override
-    protected void runTask() throws IOException {
-        try{
+    protected void runTask() throws IOException, TweeterRemoteException {
             LoginResponse response = getServerFacade().login(request, URL_PATH);
             if(response.isSuccess()){
                 currentUser = response.getUser();
                 authToken = response.getAuthToken();
                 BackgroundTaskUtils.loadImage(currentUser);
             } else {
-                sendFailedMessage(response.getMessage());
+                throw new IOException(response.getMessage());
+                //sendFailedMessage(response.getMessage());
             }
-        } catch (TweeterRemoteException e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -35,15 +35,13 @@ public class LogoutTask extends BackgroundTask {
 
 
     @Override
-    protected void runTask() throws IOException {
-        try{
+    protected void runTask() throws IOException, TweeterRemoteException {
             LogoutResponse response = getServerFacade().logout(request, URL_PATH);
             if (response.isSuccess()){
                 System.out.println("I logged out today!");
+            } else {
+                throw new IOException("Logout response failed.");
             }
-        } catch (TweeterRemoteException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

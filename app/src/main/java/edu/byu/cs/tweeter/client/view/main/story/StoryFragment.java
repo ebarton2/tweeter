@@ -193,7 +193,7 @@ public class StoryFragment extends Fragment implements StoryPresenter.StoryView 
                             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(clickable));
                             startActivity(intent);
                         } else {
-                            presenter.getUser(userAlias.getText().toString());
+                            presenter.getUser(clickable);
                         }
                     }
 

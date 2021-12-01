@@ -42,21 +42,15 @@ public class GetFollowersTask extends PagedTask<User> {
     }
 
     @Override
-    protected void runTask() throws IOException {
-        try {
-            FollowersResponse response = getServerFacade().getFollowers(request, URL_PATH);
-            if(response.isSuccess()) {
-                items = response.getFollowers();
-                hasMorePages = response.getHasMorePages();
+    protected void runTask() throws IOException, TweeterRemoteException {
+        FollowersResponse response = getServerFacade().getFollowers(request, URL_PATH);
+        if(response.isSuccess()) {
+            items = response.getFollowers();
+            hasMorePages = response.getHasMorePages();
 
-                loadImages(items);
-            } else {
-                sendFailedMessage(response.getMessage());
-            }
-        } catch (TweeterRemoteException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            loadImages(items);
+        } else {
+            throw new IOException(response.getMessage());
         }
     }
 

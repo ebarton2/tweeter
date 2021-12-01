@@ -28,7 +28,7 @@ public class FakeData {
      * Generated users.
      */
     private static final User user1 = new User("Allen", "Anderson", "@allen", MALE_IMAGE_URL);
-    private static final User user2 = new User("Amy", "Ames", "@amy", FEMALE_IMAGE_URL);
+    private static final User user2 = new User("Amy", "Ames", "@John", FEMALE_IMAGE_URL);
     private static final User user3 = new User("Bob", "Bobson", "@bob", MALE_IMAGE_URL);
     private static final User user4 = new User("Bonnie", "Beatty", "@bonnie", FEMALE_IMAGE_URL);
     private static final User user5 = new User("Chris", "Colston", "@chris", MALE_IMAGE_URL);

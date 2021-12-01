@@ -194,7 +194,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.FeedView {
                             startActivity(intent);
                         } else {
                             // This is where we get a user's profile
-                            presenter.getUser(userAlias.getText().toString());
+                            presenter.getUser(clickable);
                         }
                     }
 

@@ -43,8 +43,7 @@ public class GetStoryTask extends PagedTask<Status> {
     }
 
     @Override
-    protected void runTask() throws IOException {
-        try {
+    protected void runTask() throws IOException, TweeterRemoteException {
             StoryResponse response = getServerFacade().getStory(request, URL_PATH);
             if(response.isSuccess()) {
                 items = response.getStatuses();
@@ -52,13 +51,9 @@ public class GetStoryTask extends PagedTask<Status> {
 
                 loadImages(items);
             } else {
-                sendFailedMessage(response.getMessage());
+                throw new IOException(response.getMessage());
             }
-        } catch (TweeterRemoteException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override

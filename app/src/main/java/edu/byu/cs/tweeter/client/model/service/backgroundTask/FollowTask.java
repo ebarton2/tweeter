@@ -34,18 +34,14 @@ public class FollowTask extends AuthorizedTask {
     }
 
     @Override
-    protected void runTask() throws IOException {
+    protected void runTask() throws IOException, TweeterRemoteException {
         //TODO: implement later
-        try {
             FollowResponse response = getServerFacade().getFollow(request, URL_PATH);
             if (response.isSuccess()){
                 System.out.println("I followed out today!");
             } else {
                 throw new IOException("Failed to get correct input: FollowTask");
             }
-        } catch (IOException | TweeterRemoteException e) {
-            e.printStackTrace();
-        }
     }
 
 

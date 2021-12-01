@@ -47,18 +47,16 @@ public class IsFollowerTask extends AuthorizedTask {
     }
 
     @Override
-    protected void runTask() throws IOException {
-        try{
-            IsFollowerResponse response = getServerFacade().getIsFollower(request, URL_PATH);
+    protected void runTask() throws IOException, TweeterRemoteException {
+        System.out.println("Checking to see if you are following this user.");
+
+        IsFollowerResponse response = getServerFacade().getIsFollower(request, URL_PATH);
             if (response.isSuccess()){
                 followingState = response.isFollowing();
-                System.out.println("I isFollowed out today!");
+                System.out.println(followingState);
             } else {
                 throw new IOException("Failed to get correct input: IsFollowerTask");
             }
-        } catch (IOException | TweeterRemoteException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

@@ -38,17 +38,15 @@ public class GetUserTask extends AuthorizedTask {
     }
 
     @Override
-    protected void runTask() throws IOException {
+    protected void runTask() throws IOException, TweeterRemoteException {
         //TODO: Fix when we switch to live data rather than dummy data
-        try {
             GetUserResponse response = getServerFacade().getUser(request, URL_PATH);
             if (response.isSuccess()) {
                 targetUser = response.getTargetUser();
                 BackgroundTaskUtils.loadImage(targetUser);
+            } else {
+                throw new IOException(response.getMessage());
             }
-        } catch (TweeterRemoteException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

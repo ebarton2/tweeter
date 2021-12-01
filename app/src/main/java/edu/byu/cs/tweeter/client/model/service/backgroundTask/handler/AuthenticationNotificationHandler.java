@@ -14,6 +14,9 @@ public abstract class AuthenticationNotificationHandler<T extends Authentication
     @Override
     protected void handleSuccessMessage(T observer, Bundle bundle) {
         User registeredUser = (User) bundle.getSerializable(GetUserKey());
+        if (registeredUser == null) {
+            System.out.println("I'm in danger");
+        }
         AuthToken authToken = (AuthToken) bundle.getSerializable(GetAuthTokenKey());
         observer.handleSuccess(registeredUser, authToken);
     }

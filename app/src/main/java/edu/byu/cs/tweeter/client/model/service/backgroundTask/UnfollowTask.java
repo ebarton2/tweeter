@@ -35,17 +35,13 @@ public class UnfollowTask extends AuthorizedTask {
     }
 
     @Override
-    protected void runTask() throws IOException {
-        try {
+    protected void runTask() throws IOException, TweeterRemoteException {
             UnfollowResponse response = getServerFacade().getUnfollow(request, URL_PATH);
             if (response.isSuccess()){
                 System.out.println("I unfollowed out today!");
             } else {
                 throw new IOException("Failed to get correct input: FollowTask");
             }
-        } catch (IOException | TweeterRemoteException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

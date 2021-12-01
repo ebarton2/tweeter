@@ -48,18 +48,16 @@ public class RegisterTask extends AuthenticationTask {
     }
 
     @Override
-    protected void runTask() throws IOException {
-        try{
+    protected void runTask() throws IOException, TweeterRemoteException {
+
             RegisterResponse response = getServerFacade().register(request, URL_PATH);
             if(response.isSuccess()){
                 currentUser = response.getUser();
                 authToken = response.getAuthToken();
                 BackgroundTaskUtils.loadImage(currentUser);
             } else {
-                sendFailedMessage(response.getMessage());
+                throw new IOException(response.getMessage());
             }
-        } catch (TweeterRemoteException e) {
-            e.printStackTrace();
-        }
+
     }
 }

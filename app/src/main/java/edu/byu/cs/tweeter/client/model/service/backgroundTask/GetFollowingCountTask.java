@@ -34,19 +34,13 @@ public class GetFollowingCountTask extends CountTask {
     }
 
     @Override
-    protected void runTask(){
-        try {
+    protected void runTask() throws IOException, TweeterRemoteException {
             FollowingCountResponse response = getServerFacade().getFollowingCountResponse(request, URL_PATH);
             if(response.isSuccess()){
                 setCount(response.getCount());
                 sendSuccessMessage();
             } else {
-                sendFailedMessage(response.getMessage());
+                throw new IOException(response.getMessage());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TweeterRemoteException e) {
-            e.printStackTrace();
-        }
     }
 }
