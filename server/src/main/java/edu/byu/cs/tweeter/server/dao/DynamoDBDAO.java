@@ -33,12 +33,16 @@ public abstract class DynamoDBDAO {
     protected final static String STORY_TABLE = "story";
     protected final static String FEED_TABLE = "feed";
 
+    protected final DynamoDB dynamoDB;
+
+    public DynamoDBDAO() {
+        AmazonDynamoDB client = AmazonDynamoDBAsyncClientBuilder.standard().withRegion(REGION).build();
+        dynamoDB = new DynamoDB(client);
+    }
 
 
 
     protected Table getTable(String tableType) {
-        AmazonDynamoDB client = AmazonDynamoDBAsyncClientBuilder.standard().withRegion(REGION).build();
-        DynamoDB dynamoDB = new DynamoDB(client);
         Table table = dynamoDB.getTable(tableType);
         return table;
     }

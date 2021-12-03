@@ -12,28 +12,48 @@ import edu.byu.cs.tweeter.server.dao.UserDAO;
 import edu.byu.cs.tweeter.server.dao.UserDynamoDAO;
 
 public class DynamoDBFactory implements DAOFactory {
+    private UserDynamoDAO userDynamoDAO = null;
+    private AuthenticationDynamoDAO authenticationDynamoDAO = null;
+    private FollowDynamoDAO followDynamoDAO = null;
+    private StoryDynamoDAO storyDynamoDAO = null;
+    private FeedDynamoDAO feedDynamoDAO = null;
+
     @Override
     public UserDAO getUserDAO() {
-        return new UserDynamoDAO();
+        if (userDynamoDAO == null) {
+            userDynamoDAO = new UserDynamoDAO();
+        }
+        return userDynamoDAO;
     }
 
     @Override
     public AuthenticationDAO getAuthenticationDAO() {
-        return new AuthenticationDynamoDAO();
-    }
+        if (authenticationDynamoDAO == null) {
+            authenticationDynamoDAO = new AuthenticationDynamoDAO();
+        }
+        return authenticationDynamoDAO;    }
 
     @Override
     public FollowDAO getFollowDAO() {
-        return new FollowDynamoDAO();
+        if (followDynamoDAO == null) {
+            followDynamoDAO = new FollowDynamoDAO();
+        }
+        return followDynamoDAO;
     }
 
     @Override
     public StoryDAO getStoryDAO() {
-        return new StoryDynamoDAO();
+        if (storyDynamoDAO == null) {
+            storyDynamoDAO = new StoryDynamoDAO();
+        }
+        return storyDynamoDAO;
     }
 
     @Override
     public FeedDAO getFeedDAO() {
-        return new FeedDynamoDAO();
+        if (feedDynamoDAO == null) {
+            feedDynamoDAO = new FeedDynamoDAO();
+        }
+        return feedDynamoDAO;
     }
 }

@@ -1,10 +1,13 @@
 package edu.byu.cs.tweeter.server.service;
 
 import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.sqs.model.MessageAttributeValue;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.net.request.FeedRequest;
@@ -68,6 +71,7 @@ public class StatusService extends AbstractService {
     }
 
     //Actually posts the status to the story and feed, needs to use both StoryDAO and FeedDAO
+    //Here is where we will do most of our work for M4B
     public PostStatusResponse getPostStatus(PostStatusRequest request) {
         try {
             if(getAuthenticationDAO().isAuthorized(request.getAuthToken().getToken())) {
@@ -75,9 +79,10 @@ public class StatusService extends AbstractService {
                 Item item = getUserDAO().getUserItem(alias);
                 int limit = item.getInt("followers_count");
 
-                List<String> people = getFollowingDAO().getFollowers(alias, null, limit);
+                //List<String> people = getFollowingDAO().getFollowers(alias, null, limit);
 
-                boolean posted = getStoryDAO().getPostStatus(alias, request.getStatus(), people);
+                // This one line might need to be split into two, one for the story and one for the feed.
+                boolean posted = getStoryDAO().getPostStatus(alias, request.getStatus(), limit);
 
 
                 return new PostStatusResponse(posted);
@@ -87,5 +92,10 @@ public class StatusService extends AbstractService {
             e.printStackTrace();
             return new PostStatusResponse(false, e.getMessage());
         }
+    }
+
+    public void updateFeedBatch(String alias, long epoch, String statusJSON, String peopleList) {
+        String[] peopleArray = peopleList.split(",");
+        getFeedDAO().updateFeedTableBatch(alias, epoch, statusJSON, peopleArray);
     }
 }

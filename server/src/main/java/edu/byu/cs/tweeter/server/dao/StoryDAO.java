@@ -11,5 +11,5 @@ import edu.byu.cs.tweeter.model.net.response.StoryResponse;
 
 public interface StoryDAO {
     List<Status> getStory(String alias, Status lastStatus, int limit) throws ParseException;
-    boolean getPostStatus(String alias, Status status, List<String> people) throws ParseException;
+    boolean getPostStatus(String alias, Status status, int limit) throws ParseException;
 }

@@ -9,4 +9,5 @@ import edu.byu.cs.tweeter.model.net.response.FeedResponse;
 
 public interface FeedDAO {
     List<Status> getFeed(String alias, Status lastStatus, int limit) throws ParseException;
+    void updateFeedTableBatch(String targetAlias, long epoch, String statusJSON, String[] people);
 }

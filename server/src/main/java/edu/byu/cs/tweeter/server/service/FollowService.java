@@ -1,10 +1,18 @@
 package edu.byu.cs.tweeter.server.service;
 
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
+import com.amazonaws.services.sqs.model.MessageAttributeValue;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
+import com.amazonaws.services.sqs.model.SendMessageResult;
+
 import org.hamcrest.core.Is;
 import org.junit.AssumptionViolatedException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import edu.byu.cs.tweeter.model.domain.User;
@@ -33,6 +41,9 @@ import edu.byu.cs.tweeter.server.util.FakeData;
  * Contains the business logic for getting the users a user is following.
  */
 public class FollowService extends AbstractService {
+
+    private final static String SQS_URL_UPDATE_FEED = "https://sqs.us-west-1.amazonaws.com/340065643546/UpdateFeed";
+
 
     public FollowService(DAOFactory factory) {
         super(factory);
@@ -187,5 +198,43 @@ public class FollowService extends AbstractService {
     private void updateFollows(String alias, String followAlias, boolean increase) throws Exception {
         getUserDAO().updateFolloweeCount(alias, increase);
         getUserDAO().updateFollowerCount(followAlias, increase);
+    }
+
+    public void updateFollowersFeedSQS(String alias, int limit, long epoch, String statusJSON) {
+        try {
+            List<String> people = getFollowingDAO().getFollowers(alias, null, limit);
+            StringBuilder builder = new StringBuilder();
+            for(int i = 0; i < people.size(); ++i) {
+                builder.append(people.get(i) + ",");
+                if (i % 100 == 0 || i == people.size() - 1) {
+                    loopSQSMessage(alias, epoch, statusJSON, builder.toString());
+                    builder = new StringBuilder();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loopSQSMessage(String alias, long epoch, String statusJSON, String followers) {
+        Map<String, MessageAttributeValue> attributeValueMap = new HashMap<>();
+
+        attributeValueMap.put("alias", new MessageAttributeValue().withDataType("String").withStringValue(alias));
+        String epochString = Long.toString(epoch);
+        attributeValueMap.put("time_stamp", new MessageAttributeValue().withDataType("Number").withStringValue(epochString));
+        attributeValueMap.put("status", new MessageAttributeValue().withDataType("String").withStringValue(statusJSON));
+
+        SendMessageRequest send_msg_request = new SendMessageRequest()
+                .withQueueUrl(SQS_URL_UPDATE_FEED)
+                .withMessageBody(followers)
+                .withMessageAttributes(attributeValueMap)
+                .withDelaySeconds(0);
+
+        AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
+        SendMessageResult send_msg_result = sqs.sendMessage(send_msg_request);
+
+        String msgId = send_msg_result.getMessageId();
+        System.out.println("Message ID: " + msgId);
     }
 }
